@@ -16,6 +16,17 @@ class Kernel extends ConsoleKernel
         //
     ];
 
+    protected $middleware = [
+        \Barryvdh\Cors\HandleCors::class,
+    ];
+
+    protected $middlewareGroups = [
+        'throttle:60,1',
+        'bindings',
+        'api' => [
+            \Barryvdh\Cors\HandleCors::class,
+        ],
+    ];
     /**
      * Define the application's command schedule.
      *
