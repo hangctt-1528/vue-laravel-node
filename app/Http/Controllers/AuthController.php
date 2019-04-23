@@ -23,9 +23,9 @@ class AuthController extends Controller
     public function register(RegisterFormRequest $request)
     {
         $data = [
-            'name' => $request->email,
-            'email' => $request->name, 
-            'password' => bcrypt($request->password)
+            'name' => $request->name,
+            'email' => $request->email, 
+            'password' => $request->password
         ];
        
         $result = $this->service->store($data);
