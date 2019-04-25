@@ -34,8 +34,6 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
-
     /**
      * Create a new controller instance.
      *
@@ -49,19 +47,16 @@ class LoginController extends Controller
     public function login(LoginRequest $request, AuthService $passportService)
     {
         $data = $request->only(['email', 'password']);
-
-        if (!Auth::attempt($data)) {
-            throw new AuthenticationException;
-        }
-
-        //nhan du lieu nguoi dung de login
-        $user = User::where('email', '=', $data['email'])->first();
-        $response = [];
-        //user co ton tai
-        if ($user) {  
-            $response = $response = $passportService->personalAccessToken($request->user());
-        }
+        $response = $passportService->passwordGrantToken($data);
 
         return new AuthResource($response, 'login');
+    }
+
+    public function refreshToken(RefreshTokenRequest $request, AuthService $passportService)
+    {
+        $token = $request->refresh_token;
+        $response = $passportService->refreshGrantToken($token);
+        
+        return new AuthResource($response, 'refreshToken');
     }
 }

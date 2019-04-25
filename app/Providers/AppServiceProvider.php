@@ -4,13 +4,16 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\UserRepository;
+use App\Repositories\ItemRepository;
 
 use App\Repositories\UserRepositoryInterface;
+use App\Repositories\ItemRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
     protected $services = [
         UserRepositoryInterface::class => UserRepository::class,
+        ItemRepositoryInterface::class => ItemRepository::class,
     ];
 
     /**

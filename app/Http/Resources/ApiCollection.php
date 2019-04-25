@@ -2,17 +2,18 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 
-abstract class ApiResource extends JsonResource
+abstract class ApiCollection extends ResourceCollection
 {
     protected $message;
 
     public function __construct($resource, $message = null)
     {
-        parent::__construct($resource);
         $this->message = $message;
+
+        parent::__construct($resource);
     }
 
     public function with($request)

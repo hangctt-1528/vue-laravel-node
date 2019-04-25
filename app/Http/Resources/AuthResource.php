@@ -22,6 +22,13 @@ class AuthResource extends ApiResource
         return [
             'token_type' => $this->resource['token_type'],
             'access_token' => $this->resource['access_token'],
+            'refresh_token' => $this->resource['refresh_token'],
+            'expires_at' => now()->addMinutes(config('common.api.token_expire_in'))->toIso8601String(),
         ];
+    }
+
+    protected function refreshToken()
+    {
+        return $this->login();
     }
 }

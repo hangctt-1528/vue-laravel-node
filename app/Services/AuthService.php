@@ -15,21 +15,31 @@ class AuthService extends AppService
         $this->client = new Client;
     }
 
-    public function personalAccessToken($user)
+    public function passwordGrantToken(array $input, $scope = '')
     {
-        $config = config('common.api.personal_access_token');
-        $token = $user->createToken($config['name']);
-        $response = [
-            'token_type' => $config['token_type'],
-            'expires_at' => $token->token->expires_at,
-            'access_token' => $token->accessToken,
-        ];
-
-        return $response;
+        $response = $this->client->post(env('APP_URL') . '/oauth/token', [
+            'form_params' => [
+                'grant_type' => 'password',
+                'client_id' => env('API_CLIENT_ID'),
+                'client_secret' => env('API_CLIENT_SECRET'),
+                'username' => $input['email'],
+                'password' => $input['password'],
+                'scope' => $scope,
+            ],
+        ]);
+        return json_decode((string)$response->getBody(), true);
     }
-
-    public function setClient(Client $client)
+    
+    public function refreshGrantToken($refreshToken)
     {
-        $this->client = $client;
+        $response = $this->client->post(env('APP_URL') . '/oauth/token', [
+            'form_params' => [
+                'grant_type' => 'refresh_token',
+                'refresh_token' => $refreshToken,
+                'client_id' => env('API_CLIENT_ID'),
+                'client_secret' => env('API_CLIENT_SECRET'),
+            ],
+        ]);
+        return json_decode((string)$response->getBody(), true);
     }
 }
