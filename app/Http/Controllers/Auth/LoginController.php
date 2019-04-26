@@ -2,8 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use Illuminate\Http\Request;
+use App\Services\AuthService;
+use App\Http\Resources\AuthResource;
+use App\Http\Requests\Auth\RefreshTokenRequest;
+use Illuminate\Auth\AuthenticationException;
+use App\Models\User;
+use Carbon\Carbon;
 
 class LoginController extends Controller
 {
@@ -35,5 +44,24 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function login(LoginRequest $request, AuthService $passportService)
+    {
+        $data = $request->only(['email', 'password']);
+
+        if (!Auth::attempt($data)) {
+            throw new AuthenticationException;
+        }
+
+        //nhan du lieu nguoi dung de login
+        $user = User::where('email', '=', $data['email'])->first();
+        $response = [];
+        //user co ton tai
+        if ($user) {  
+            $response = $response = $passportService->personalAccessToken($request->user());
+        }
+
+        return new AuthResource($response, 'login');
     }
 }
